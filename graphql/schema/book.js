@@ -23,7 +23,6 @@ module.exports = gql`
   extend type Mutation {
     createBook(bookInput: BookInput): Book!
     editBook(id: ID!, tile: String, author: String): Book!
-    deleteBook(id: ID!): Boolean!
     addRating(id: ID!, rating: Int!): Book!
   }
 `;

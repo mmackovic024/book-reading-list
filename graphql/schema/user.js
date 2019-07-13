@@ -4,7 +4,7 @@ module.exports = gql`
   type User {
     id: ID!
     username: String!
-    password: String
+    password: String!
     email: String
     bookCount: Int
     books: [Book]
@@ -23,8 +23,10 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createUser(userInput: UserInput): User
-    deleteUser(id: ID!): Boolean!
+    createUser(userInput: UserInput): User!
+    editUser(userInput: UserInput): User!
+    deleteUser: Boolean!
     addBookToList(bookId: ID!): Boolean!
+    removeBookFromList(bookId: ID!): Boolean!
   }
 `;

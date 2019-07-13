@@ -36,22 +36,6 @@ module.exports = {
         .then(res => res[1])
         .catch(err => err);
     },
-    deleteBook: (_, { id }, { models, me }) => {
-      if (!me) throw new Error('Not logged in!');
-      return models.Book.destroy({
-        where: { id: id },
-        returning: true,
-        plain: true
-      })
-        .then(deleted => {
-          if (deleted) {
-            return true;
-          } else {
-            throw new Error("Book doesn't exists");
-          }
-        })
-        .catch(err => err);
-    },
     addRating: (_, { id, rating }, { models, me }) => {
       if (!me) throw new Error('Not logged in!');
       return models.Book.findOne({ where: { id: id } })
@@ -61,7 +45,9 @@ module.exports = {
           return book;
         })
         .then(res => res)
-        .catch(err => err);
+        .catch(() => {
+          throw new Error('Book not found');
+        });
     }
   },
   Book: {

@@ -13,7 +13,7 @@ module.exports = {
         .then(res => res)
         .catch(err => err);
     },
-    getMe: (_, __, { models, me }) => {
+    getMe: (_, __, { me }) => {
       return me;
     }
   },
@@ -37,31 +37,37 @@ module.exports = {
         })
         .catch(err => err);
     },
-    deleteUser: (_, { id }, { models }) => {
-      return models.User.destroy({
-        where: {
-          id: id
-        }
-      })
-        .then(deleted => {
-          if (deleted) {
-            return true;
-          } else {
-            throw new Error('Unknown username');
-          }
+    editUser: (_, { userInput }, { me }) => {
+      if (!me) throw new Error('Not logged in!');
+      return me
+        .update({
+          username: userInput.username,
+          password: userInput.password,
+          email: userInput.email
         })
+        .then(user => user)
         .catch(err => err);
     },
-    addBookToList: (_, { bookId }, { models, me }) => {
+    deleteUser: (_, __, { me }) => {
       if (!me) throw new Error('Not logged in!');
-      return models.User.findOne({ where: { id: me.id } })
-        .then(user =>
-          user
-            .addBook(bookId)
-            .then(() => true)
-            .catch(err => 'Error adding book to list ==> ' + err)
-        )
-        .catch(err => 'Error finding user ==> ' + err);
+      return me
+        .destroy()
+        .then(() => {})
+        .catch(err => err);
+    },
+    addBookToList: (_, { bookId }, { me }) => {
+      if (!me) throw new Error('Not logged in!');
+      return me
+        .addBook(bookId)
+        .then(() => true)
+        .catch(err => 'Error adding book to list ==> ' + err);
+    },
+    removeBookFromList: (_, { bookId }, { me }) => {
+      if (!me) throw new Error('Not logged in!');
+      return me
+        .removeBook(bookId)
+        .then(() => true)
+        .catch(err => 'Error removing book from list ==> ' + err);
     }
   },
   User: {

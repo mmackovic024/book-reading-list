@@ -12,7 +12,7 @@ const server = new ApolloServer({
   context: async () => ({
     models,
     me: await models.User.findOne({
-      where: { username: 'Konan' },
+      where: { username: 'djoka' },
       include: ['books']
     })
   })
