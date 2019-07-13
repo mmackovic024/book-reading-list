@@ -17,7 +17,7 @@ module.exports = gql`
   }
 
   extend type Query {
-    getBooks: [Book]!
+    Books: [Book]!
   }
 
   extend type Mutation {

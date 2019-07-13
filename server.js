@@ -12,9 +12,10 @@ const server = new ApolloServer({
   context: async () => ({
     models,
     me: await models.User.findOne({
-      where: { username: 'djoka' },
+      where: { username: '' },
       include: ['books']
-    })
+    }),
+    secret: 'secretfortoken'
   })
 });
 
@@ -46,5 +47,7 @@ const port = process.env.PORT || 5000;
 models.sequelize
   .sync({})
   .then(() =>
-    app.listen(port, () => console.log(`Server running on port ${port}`))
+    app.listen(port, () =>
+      console.log(`******* Server running on port ${port} *******`)
+    )
   );

@@ -1,41 +1,54 @@
+const jwt = require('jsonwebtoken');
+
+const createToken = async (user, secret, exp) => {
+  const { id, username, email } = user;
+  return await jwt.sign({ id, username, email }, secret, { expiresIn: exp });
+};
+
 module.exports = {
   Query: {
-    getUsers: (_, __, { models }) => {
+    Users: (_, __, { models }) => {
       return models.User.findAll({ include: ['books'] })
         .then(users => users)
         .catch(err => err);
     },
-    getUser: (_, { name }, { models }) => {
+    User: (_, { name }, { models }) => {
       return models.User.findOne({
         where: { username: name },
         include: ['books']
       })
-        .then(res => res)
+        .then(user => {
+          return user;
+        })
         .catch(err => err);
     },
-    getMe: (_, __, { me }) => {
+    Me: (_, __, { me }) => {
       return me;
     }
   },
   Mutation: {
-    createUser: (_, { userInput }, { models }) => {
+    signUp: (_, { userInput }, { models, me, secret }) => {
+      if (me) throw new Error('Already signed up');
       return models.User.findOrCreate({
-        where: {
-          username: userInput.username
-        },
+        where: { username: userInput.username },
         defaults: {
           password: userInput.password,
           email: userInput.email
         }
       })
         .then(([user, created]) => {
-          if (created) {
-            return user;
-          } else {
-            throw new Error('Username already exists');
-          }
+          if (!created) throw new Error('Username already exists');
+          return { token: createToken(user, secret, '30m') };
         })
         .catch(err => err);
+    },
+    signIn: async (_, { username, password }, { models, me, secret }) => {
+      if (me) throw new Error('Already signed in');
+      const user = await models.User.findOne({ where: { username: username } });
+      if (!user) throw new Error('Username not found');
+      const isValid = await user.validatePassword(password, user.password);
+      if (!isValid) throw new Error('Invalid password');
+      return { token: createToken(user, secret, '30m') };
     },
     editUser: (_, { userInput }, { me }) => {
       if (!me) throw new Error('Not logged in!');
@@ -52,7 +65,7 @@ module.exports = {
       if (!me) throw new Error('Not logged in!');
       return me
         .destroy()
-        .then(() => {})
+        .then(() => true)
         .catch(err => err);
     },
     addBookToList: (_, { bookId }, { me }) => {

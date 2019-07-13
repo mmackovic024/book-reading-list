@@ -10,6 +10,10 @@ module.exports = gql`
     books: [Book]
   }
 
+  type Token {
+    token: String!
+  }
+
   input UserInput {
     username: String!
     password: String!
@@ -17,13 +21,14 @@ module.exports = gql`
   }
 
   extend type Query {
-    getUsers: [User]!
-    getUser(name: String!): User
-    getMe: User
+    Users: [User]!
+    User(name: String!): User
+    Me: User
   }
 
   extend type Mutation {
-    createUser(userInput: UserInput): User!
+    signUp(userInput: UserInput): Token!
+    signIn(username: String!, password: String!): Token!
     editUser(userInput: UserInput): User!
     deleteUser: Boolean!
     addBookToList(bookId: ID!): Boolean!

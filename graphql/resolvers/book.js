@@ -1,6 +1,6 @@
 module.exports = {
   Query: {
-    getBooks: (_, __, { models }) => {
+    Books: (_, __, { models }) => {
       return models.Book.findAll({ include: ['users'] })
         .then(res => res)
         .catch(err => err);

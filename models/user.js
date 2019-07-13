@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('bcrypt');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
@@ -27,14 +29,34 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    {}
+    {
+      hooks: {
+        beforeCreate: async user => {
+          return (user.password = await user.generateHash());
+        },
+        beforeUpdate: async user => {
+          return (user.password = await user.generateHash());
+        }
+      }
+    }
   );
-  User.associate = function(models) {
+
+  User.associate = models => {
     User.belongsToMany(models.Book, {
       through: 'BookLists',
       foreignKey: 'userId',
       as: 'books'
     });
   };
+
+  User.prototype.generateHash = async function() {
+    const salt = 10;
+    return await bcrypt.hash(this.password, salt);
+  };
+
+  User.prototype.validatePassword = async function(pass) {
+    return await bcrypt.compare(pass, this.password);
+  };
+
   return User;
 };
