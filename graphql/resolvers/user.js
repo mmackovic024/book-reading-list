@@ -22,8 +22,10 @@ module.exports = {
         })
         .catch(err => err);
     },
-    Me: (_, __, { me }) => {
-      return me;
+    Me: (_, __, { models, me }) => {
+      return models.User.findByPk(me.id)
+        .then(me => me)
+        .catch(e => e);
     }
   },
   Mutation: {
@@ -38,17 +40,17 @@ module.exports = {
       })
         .then(([user, created]) => {
           if (!created) throw new Error('Username already exists');
-          return { token: createToken(user, secret, '30m') };
+          return { token: createToken(user, secret, '2h') };
         })
         .catch(err => err);
     },
     signIn: async (_, { username, password }, { models, me, secret }) => {
-      if (me) throw new Error('Already signed in');
+      // if (me) throw new Error('Already signed in');
       const user = await models.User.findOne({ where: { username: username } });
       if (!user) throw new Error('Username not found');
       const isValid = await user.validatePassword(password, user.password);
       if (!isValid) throw new Error('Invalid password');
-      return { token: createToken(user, secret, '30m') };
+      return { token: createToken(user, secret, '2h') };
     },
     editUser: (_, { userInput }, { me }) => {
       if (!me) throw new Error('Not logged in!');

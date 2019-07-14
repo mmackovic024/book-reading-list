@@ -1,22 +1,40 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
-// const cors = require('cors');
+const { ApolloServer, AuthenticationError } = require('apollo-server-express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const models = require('./models');
+const jwt = require('jsonwebtoken');
+
+// secret for JWT - delete in production
+const secret = 'secretfortoken';
+//======================================
+
+const getMe = async req => {
+  const token = req.headers['x-token'];
+
+  if (token) {
+    try {
+      return await jwt.verify(token, secret);
+    } catch (e) {
+      throw new AuthenticationError('Session expired, sign in again.');
+    }
+  }
+};
 
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: async () => ({
-    models,
-    me: await models.User.findOne({
-      where: { username: '' },
-      include: ['books']
-    }),
-    secret: 'secretfortoken'
-  })
+  context: async ({ req }) => {
+    const myToken = await getMe(req);
+    const me = myToken ? await models.User.findByPk(myToken.id) : null;
+    return {
+      models,
+      me,
+      secret
+    };
+  }
 });
 
 const app = express();
@@ -24,7 +42,7 @@ server.applyMiddleware({ app });
 
 app.use(bodyParser.json());
 
-// app.use(cors());
+app.use(cors());
 
 app.get('/', (req, res) => res.send('Welcome'));
 
