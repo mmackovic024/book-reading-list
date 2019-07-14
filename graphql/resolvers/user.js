@@ -29,8 +29,7 @@ module.exports = {
     }
   },
   Mutation: {
-    signUp: (_, { userInput }, { models, me, secret }) => {
-      if (me) throw new Error('Already signed up');
+    signUp: (_, { userInput }, { models, secret }) => {
       return models.User.findOrCreate({
         where: { username: userInput.username },
         defaults: {
@@ -44,8 +43,7 @@ module.exports = {
         })
         .catch(err => err);
     },
-    signIn: async (_, { username, password }, { models, me, secret }) => {
-      // if (me) throw new Error('Already signed in');
+    signIn: async (_, { username, password }, { models, secret }) => {
       const user = await models.User.findOne({ where: { username: username } });
       if (!user) throw new Error('Username not found');
       const isValid = await user.validatePassword(password, user.password);
@@ -53,7 +51,6 @@ module.exports = {
       return { token: createToken(user, secret, '2h') };
     },
     editUser: (_, { userInput }, { me }) => {
-      if (!me) throw new Error('Not logged in!');
       return me
         .update({
           username: userInput.username,
@@ -64,21 +61,18 @@ module.exports = {
         .catch(err => err);
     },
     deleteUser: (_, __, { me }) => {
-      if (!me) throw new Error('Not logged in!');
       return me
         .destroy()
         .then(() => true)
         .catch(err => err);
     },
     addBookToList: (_, { bookId }, { me }) => {
-      if (!me) throw new Error('Not logged in!');
       return me
         .addBook(bookId)
         .then(() => true)
         .catch(err => 'Error adding book to list ==> ' + err);
     },
     removeBookFromList: (_, { bookId }, { me }) => {
-      if (!me) throw new Error('Not logged in!');
       return me
         .removeBook(bookId)
         .then(() => true)
