@@ -54,10 +54,14 @@ export default () => {
               size={50}
               thickness={3}
               variant="indeterminate"
-              style={{ position: 'relative', left: '50%', marginTop: '5rem' }}
+              style={{
+                position: 'relative',
+                left: '50%',
+                marginTop: '5rem'
+              }}
             />
           );
-        if (error) return <Warning />;
+        if (error) return <Warning message={error.message} />;
 
         const averageRating = rating =>
           (rating.reduce((acc, curr) => acc + curr) / rating.length).toFixed(1);

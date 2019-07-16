@@ -1,7 +1,8 @@
 import React from 'react';
-import { Snackbar, SnackbarContent } from '@material-ui/core';
+import { ApolloConsumer } from 'react-apollo';
+import { Snackbar, SnackbarContent, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Error } from '@material-ui/icons';
+import { Error, Close } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   error: {
@@ -18,37 +19,47 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default () => {
+export default props => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  const handleClose = client => {
     setOpen(false);
+    // client.resetStore();
   };
 
   return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'center'
-      }}
-      open={open}
-      autoHideDuration={5000}
-      onClick={handleClose}
-    >
-      <SnackbarContent
-        className={classes.error}
-        aria-describedby="client-snackbar"
-        message={
-          <span id="client-snackbar" className={classes.message}>
-            <Error className={classes.icon} />
-            Error! Reload or try again later.
-          </span>
-        }
-      />
-    </Snackbar>
+    <ApolloConsumer>
+      {client => (
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+          }}
+          open={open}
+          autoHideDuration={5000}
+        >
+          <SnackbarContent
+            className={classes.error}
+            aria-describedby="client-snackbar"
+            message={
+              <span id="client-snackbar" className={classes.message}>
+                <Error className={classes.icon} />
+                {props.message}
+              </span>
+            }
+            action={
+              <IconButton
+                key="close"
+                color="inherit"
+                onClick={() => handleClose(client)}
+              >
+                <Close />
+              </IconButton>
+            }
+          />
+        </Snackbar>
+      )}
+    </ApolloConsumer>
   );
 };

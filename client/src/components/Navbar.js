@@ -7,15 +7,20 @@ import {
   Typography
   // Grid
 } from '@material-ui/core';
-import Login from './Login';
-// import Cat from '../../public/Cat.png'
+import SignIn from './SignIn';
+import SignOutButton from './SignOutButton';
+import Cat from '../Cat.png';
 
-export default () => {
+export default ({ user }) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => setOpen(true);
+  const handleSignIn = () => {
+    setOpen(true);
+  };
 
   const handleClose = () => setOpen(false);
+
+  const name = user.Me ? user.Me.username : null;
 
   return (
     <>
@@ -25,15 +30,37 @@ export default () => {
           <Typography variant="h5" align="center">
             Book reading list app
           </Typography>
-          <Login open={open} handleClose={handleClose} />
-          <Button
-            color="inherit"
-            variant="outlined"
+          <img
+            src={Cat}
+            height="45px"
             style={{ marginLeft: 'auto' }}
-            onClick={handleClickOpen}
-          >
-            Sign in
-          </Button>
+            alt="logo"
+          />
+          {name && (
+            <>
+              <Typography
+                variant="body1"
+                align="right"
+                style={{ marginLeft: 'auto' }}
+              >
+                Welcome {name}, {user.Me.bookCount} books on Your list
+              </Typography>
+              <SignOutButton />
+            </>
+          )}
+          {!name && (
+            <>
+              <SignIn open={open} handleClose={handleClose} />
+              <Button
+                color="inherit"
+                variant="outlined"
+                style={{ marginLeft: 'auto' }}
+                onClick={handleSignIn}
+              >
+                Sign in
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </>

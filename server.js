@@ -12,7 +12,9 @@ const secret = 'secretfortoken';
 //======================================
 
 const getMe = async req => {
-  const token = req.headers['x-token'];
+  const token = req.headers['authorization']
+    ? req.headers['authorization'].split(' ')[1]
+    : undefined;
 
   if (token) {
     try {
@@ -66,6 +68,6 @@ models.sequelize
   .sync({})
   .then(() =>
     app.listen(port, () =>
-      console.log(`******* Server running on port ${port} *******`)
+      console.log(`============= Server running on port ${port} =============`)
     )
   );

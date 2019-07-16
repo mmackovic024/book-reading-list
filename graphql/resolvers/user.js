@@ -23,9 +23,13 @@ module.exports = {
         .catch(err => err);
     },
     Me: (_, __, { models, me }) => {
+      if (!me) return null;
       return models.User.findByPk(me.id)
         .then(me => me)
-        .catch(e => e);
+        .catch(e => {
+          console.log(e);
+          return e;
+        });
     }
   },
   Mutation: {
