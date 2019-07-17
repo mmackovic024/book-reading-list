@@ -10,6 +10,7 @@ import { Query } from 'react-apollo';
 import Navbar from './components/Navbar';
 import Data from './components/Data';
 import Warning from './components/Warning';
+import { signOut } from './components/SignOutButton';
 
 const GET_ME = gql`
   {
@@ -49,7 +50,14 @@ const client = new ApolloClient({
 export default () => {
   return (
     <ApolloProvider client={client}>
-      <Query query={GET_ME}>
+      <Query
+        query={GET_ME}
+        onError={err => {
+          if (err.networkError.statusCode === 400) {
+            signOut(client);
+          }
+        }}
+      >
         {({ loading, error, data }) => {
           if (loading)
             return (
@@ -62,16 +70,14 @@ export default () => {
               />
             );
           if (error) {
-            console.log(error);
-            // return error.message;
             return <Warning message={error.message} />;
           }
 
           return (
             <>
-              <Navbar user={data} />
-              <Container style={{ paddingTop: '5rem' }}>
-                <Data />
+              <Navbar user={data.Me} />
+              <Container style={{ paddingTop: '8rem' }}>
+                <Data user={data.Me} />
               </Container>
             </>
           );

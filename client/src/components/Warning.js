@@ -25,7 +25,7 @@ export default props => {
 
   const handleClose = client => {
     setOpen(false);
-    // client.resetStore();
+    client.resetStore();
   };
 
   return (

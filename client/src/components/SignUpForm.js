@@ -9,11 +9,16 @@ import {
   DialogTitle
 } from '@material-ui/core';
 
-export default ({ open, handleClose, signIn, error }) => {
+export default ({ open, handleClose, signUp, error }) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState('');
 
-  const hadleSignin = () => signIn({ variables: { username, password } });
+  const hadleSignUp = () => {
+    let variables = { username, password };
+    if (email) variables = { ...variables, email };
+    signUp({ variables });
+  };
 
   if (error) {
     const e = error.message.split(':');
@@ -27,7 +32,7 @@ export default ({ open, handleClose, signIn, error }) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Sign in</DialogTitle>
+        <DialogTitle id="form-dialog-title">Sign Up</DialogTitle>
         {error && (
           <DialogContent>
             <p style={{ color: 'red', margin: 0, padding: 0 }}>{error}</p>
@@ -54,6 +59,7 @@ export default ({ open, handleClose, signIn, error }) => {
               Password
             </InputLabel>
             <OutlinedInput
+              style={{ marginBottom: '1rem' }}
               margin="dense"
               id="password"
               name="Password"
@@ -64,13 +70,25 @@ export default ({ open, handleClose, signIn, error }) => {
               autoComplete={password}
               onChange={({ target: { value } }) => setPassword(value)}
             />
+            <InputLabel htmlFor="email" shrink>
+              Email
+            </InputLabel>
+            <OutlinedInput
+              margin="dense"
+              id="email"
+              name="Email"
+              type="email"
+              value={email}
+              fullWidth
+              onChange={({ target: { value } }) => setEmail(value)}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={hadleSignin} color="primary">
-              Sign in
+            <Button onClick={hadleSignUp} color="primary">
+              Sign UP
             </Button>
           </DialogActions>
         </form>

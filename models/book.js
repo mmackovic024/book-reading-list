@@ -6,14 +6,18 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'Empty title not allowed'
+        }
       }
     },
     author: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'Empty title not allowed'
+        }
       }
     },
     rating: {
