@@ -12,8 +12,8 @@ const secret = 'secretfortoken';
 //======================================
 
 const getMe = async req => {
-  const token = req.headers['authorization']
-    ? req.headers['authorization'].split(' ')[1]
+  const token = req.headers['authentication']
+    ? req.headers['authentication'].split(' ')[1]
     : undefined;
 
   if (token) {

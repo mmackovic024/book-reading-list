@@ -26,10 +26,7 @@ module.exports = {
       if (!me) return null;
       return models.User.findByPk(me.id)
         .then(me => me)
-        .catch(e => {
-          console.log(e);
-          return e;
-        });
+        .catch(e => e);
     }
   },
   Mutation: {
@@ -54,14 +51,14 @@ module.exports = {
       if (!isValid) throw new Error('Invalid password');
       return { token: createToken(user, secret, '2h') };
     },
-    editUser: (_, { userInput }, { me }) => {
+    editUser: (_, { userInput }, { me, secret }) => {
       return me
         .update({
           username: userInput.username,
           password: userInput.password,
           email: userInput.email
         })
-        .then(user => user)
+        .then(user => ({ token: createToken(user, secret, '2h') }))
         .catch(err => err);
     },
     deleteUser: (_, __, { me }) => {

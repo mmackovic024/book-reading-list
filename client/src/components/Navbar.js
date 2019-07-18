@@ -10,10 +10,12 @@ import {
 import SignIn from './SignIn';
 import SignOutButton from './SignOutButton';
 import SignUp from './SignUp';
+import EditUser from './EditUser';
 
 export default ({ user }) => {
   const [openIn, setOpenIn] = React.useState(false);
   const [openUp, setOpenUp] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
 
   const handleSignIn = () => {
     setOpenIn(true);
@@ -26,6 +28,12 @@ export default ({ user }) => {
   };
 
   const handleCloseUp = () => setOpenUp(false);
+
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleCloseEdit = () => setOpenEdit(false);
 
   const name = user ? user.username : null;
 
@@ -49,12 +57,30 @@ export default ({ user }) => {
             {name && (
               <>
                 <Grid item xs={12} sm="auto">
+                  <EditUser
+                    user={user}
+                    open={openEdit}
+                    handleClose={handleCloseEdit}
+                  />
                   <Typography
                     variant="body2"
                     align="center"
                     style={{ marginLeft: 'auto' }}
                   >
-                    Welcome {name}, {user.bookCount} books on Your list
+                    Username:{' '}
+                    {
+                      <>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          size="small"
+                          onClick={handleEdit}
+                        >
+                          {name}
+                        </Button>
+                      </>
+                    }{' '}
+                    {user.bookCount} books on Your list
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -64,8 +90,8 @@ export default ({ user }) => {
             )}
             {!name && (
               <>
-                <SignIn open={openIn} handleClose={handleCloseIn} />
                 <Grid item>
+                  <SignIn open={openIn} handleClose={handleCloseIn} />
                   <Button
                     color="inherit"
                     variant="outlined"

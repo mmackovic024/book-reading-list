@@ -2,11 +2,11 @@ import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import gql from 'graphql-tag';
 import { Mutation, ApolloConsumer } from 'react-apollo';
-import SignUpForm from './SignUpForm';
+import EditUserForm from './EditUserForm';
 
-const SIGN_UP = gql`
-  mutation signUp($username: String!, $password: String!, $email: String) {
-    signUp(
+const EDIT_USER = gql`
+  mutation editUser($username: String!, $password: String!, $email: String) {
+    editUser(
       userInput: { username: $username, password: $password, email: $email }
     ) {
       token
@@ -14,21 +14,21 @@ const SIGN_UP = gql`
   }
 `;
 
-export default ({ open, handleClose }) => {
+export default ({ user, open, handleClose }) => {
   return (
     <ApolloConsumer>
       {client => {
         return (
           <Mutation
-            mutation={SIGN_UP}
+            mutation={EDIT_USER}
             onCompleted={data => {
               handleClose();
-              localStorage.setItem('x-token', data.signUp.token);
+              localStorage.setItem('x-token', data.editUser.token);
               client.resetStore();
             }}
-            onError={err => {}}
+            onError={err => console.log(err)}
           >
-            {(signUp, { loading, error }) => {
+            {(editUser, { loading, error }) => {
               if (loading)
                 return (
                   <CircularProgress
@@ -44,11 +44,14 @@ export default ({ open, handleClose }) => {
                   />
                 );
 
+              if (error) console.log(error);
+
               return (
-                <SignUpForm
+                <EditUserForm
+                  user={user}
                   open={open}
                   handleClose={handleClose}
-                  signUp={signUp}
+                  editUser={editUser}
                   error={error}
                 />
               );

@@ -20,6 +20,7 @@ const GET_ME = gql`
       email
       bookCount
       books {
+        id
         title
         author
         rating
@@ -37,7 +38,7 @@ const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('x-token');
 
   if (token) {
-    headers = { ...headers, Authorization: 'Bearer ' + token };
+    headers = { ...headers, Authentication: 'Bearer ' + token };
   }
   return { headers };
 });
@@ -57,6 +58,7 @@ export default () => {
             signOut(client);
           }
         }}
+        fetchPolicy="cache-and-network"
       >
         {({ loading, error, data }) => {
           if (loading)

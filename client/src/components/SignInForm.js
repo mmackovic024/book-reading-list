@@ -22,12 +22,8 @@ export default ({ open, handleClose, signIn, error }) => {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Sign in</DialogTitle>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="signin-form">
+        <DialogTitle id="signin-form">Sign in</DialogTitle>
         {error && (
           <DialogContent>
             <p style={{ color: 'red', margin: 0, padding: 0 }}>{error}</p>
@@ -48,6 +44,7 @@ export default ({ open, handleClose, signIn, error }) => {
               value={username}
               fullWidth
               required
+              autoComplete="username"
               onChange={({ target: { value } }) => setUsername(value)}
             />
             <InputLabel htmlFor="password" shrink>
@@ -61,7 +58,7 @@ export default ({ open, handleClose, signIn, error }) => {
               value={password}
               fullWidth
               required
-              autoComplete={password}
+              autoComplete="current-password"
               onChange={({ target: { value } }) => setPassword(value)}
             />
           </DialogContent>

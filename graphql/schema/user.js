@@ -29,7 +29,7 @@ module.exports = gql`
   extend type Mutation {
     signUp(userInput: UserInput): Token!
     signIn(username: String!, password: String!): Token!
-    editUser(userInput: UserInput): User!
+    editUser(userInput: UserInput): Token!
     deleteUser: Boolean!
     addBookToList(bookId: ID!): Boolean!
     removeBookFromList(bookId: ID!): Boolean!

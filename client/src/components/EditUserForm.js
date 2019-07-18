@@ -9,15 +9,15 @@ import {
   DialogTitle
 } from '@material-ui/core';
 
-export default ({ open, handleClose, signUp, error }) => {
-  const [username, setUsername] = React.useState('');
+export default ({ user, open, handleClose, editUser, error }) => {
+  const [username, setUsername] = React.useState(user.username);
   const [password, setPassword] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState(user.email || '');
 
-  const handleSignUp = () => {
+  const handleEdit = () => {
     let variables = { username, password };
     if (email) variables = { ...variables, email };
-    signUp({ variables });
+    editUser({ variables });
   };
 
   if (error) {
@@ -27,8 +27,13 @@ export default ({ open, handleClose, signUp, error }) => {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="signup-form">
-        <DialogTitle id="signup-form">Sign Up</DialogTitle>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="edituser-form"
+        disablePortal
+      >
+        <DialogTitle id="edituser-form">Edit user data</DialogTitle>
         {error && (
           <DialogContent>
             <p style={{ color: 'red', margin: 0, padding: 0 }}>{error}</p>
@@ -37,7 +42,7 @@ export default ({ open, handleClose, signUp, error }) => {
         <form>
           <DialogContent>
             <InputLabel htmlFor="username" shrink>
-              Username
+              New username
             </InputLabel>
             <OutlinedInput
               style={{ marginBottom: '1rem' }}
@@ -53,7 +58,7 @@ export default ({ open, handleClose, signUp, error }) => {
               onChange={({ target: { value } }) => setUsername(value)}
             />
             <InputLabel htmlFor="password" shrink>
-              Password
+              New password or confirm old password
             </InputLabel>
             <OutlinedInput
               style={{ marginBottom: '1rem' }}
@@ -68,7 +73,7 @@ export default ({ open, handleClose, signUp, error }) => {
               onChange={({ target: { value } }) => setPassword(value)}
             />
             <InputLabel htmlFor="email" shrink>
-              Email
+              New email
             </InputLabel>
             <OutlinedInput
               margin="dense"
@@ -84,8 +89,8 @@ export default ({ open, handleClose, signUp, error }) => {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleSignUp} color="primary">
-              Sign UP
+            <Button onClick={handleEdit} color="primary">
+              Save Changes
             </Button>
           </DialogActions>
         </form>
