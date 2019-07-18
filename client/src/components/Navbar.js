@@ -93,6 +93,7 @@ export default ({ user }) => {
                     color="inherit"
                     variant="outlined"
                     onClick={handleSignIn}
+                    style={{ margin: '0 0.5rem' }}
                   >
                     Sign in
                   </Button>
@@ -101,6 +102,7 @@ export default ({ user }) => {
                     color="secondary"
                     variant="outlined"
                     onClick={handleSignUp}
+                    style={{ margin: '0 0.5rem' }}
                   >
                     Sign UP
                   </Button>

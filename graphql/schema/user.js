@@ -4,7 +4,6 @@ module.exports = gql`
   type User {
     id: ID!
     username: String!
-    password: String!
     email: String
     bookCount: Int
     books: [Book]

@@ -6,6 +6,7 @@ import MaterialTable from 'material-table';
 import { makeStyles } from '@material-ui/core/styles';
 import Warning from './Warning';
 import ListSelect from './ListSelect';
+import UsersTable from './UsersTable';
 
 const GET_BOOKS = gql`
   {
@@ -47,6 +48,19 @@ export default ({ user }) => {
 
   const classes = useStyles();
 
+  const tableOptions = {
+    pageSize: 10,
+    pageSizeOptions: [5, 10],
+    padding: 'dense'
+  };
+
+  const columns = [
+    { title: 'Title', field: 'title', defaultSort: 'asc' },
+    { title: 'Author', field: 'author' },
+    { title: 'Rating', field: 'rating', type: 'numeric' },
+    { title: 'Read count', field: 'readCount', type: 'numeric' }
+  ];
+
   return (
     <Query query={GET_BOOKS}>
       {({ loading, error, data }) => {
@@ -74,13 +88,14 @@ export default ({ user }) => {
           );
         if (error) return <Warning message={error.message} />;
 
-        const averageRating = rating =>
-          (rating.reduce((acc, curr) => acc + curr) / rating.length).toFixed(1);
+        const averageRating = rating => {
+          return (
+            rating.reduce((acc, curr) => acc + curr) / rating.length
+          ).toFixed(1);
+        };
 
-        if (typeof bookArr[0].rating === 'array')
-          return bookArr.forEach(
-            book => (book.rating = averageRating(book.rating))
-          );
+        if (data.Books && bookArr.length > 0 && bookArr[0].rating.length > 0)
+          bookArr.forEach(book => (book.rating = +averageRating(book.rating)));
 
         return (
           <>
@@ -101,62 +116,25 @@ export default ({ user }) => {
               />
             )}
             <Paper className={classes.root}>
+              {selectedValue === 'users' && <UsersTable />}
               {selectedValue === 'all' && (
                 <MaterialTable
                   className={classes.table}
                   title="All books in database"
-                  columns={[
-                    { title: 'Title', field: 'title', defaultSort: 'asc' },
-                    { title: 'Author', field: 'author' },
-                    { title: 'Rating', field: 'rating', type: 'numeric' },
-                    { title: 'Read count', field: 'readCount', type: 'numeric' }
-                  ]}
+                  columns={columns}
                   data={bookArr}
-                  options={{
-                    pageSize: 10,
-                    pageSizeOptions: [5, 10],
-                    padding: 'dense'
-                  }}
+                  options={tableOptions}
                 />
               )}
               {selectedValue === 'list' && (
                 <MaterialTable
                   className={classes.table}
                   title={'Your reading list'}
-                  columns={[
-                    { title: 'Title', field: 'title', defaultSort: 'asc' },
-                    { title: 'Author', field: 'author' },
-                    { title: 'Rating', field: 'rating', type: 'numeric' },
-                    { title: 'Read count', field: 'readCount', type: 'numeric' }
-                  ]}
+                  columns={columns}
                   data={bookArr}
-                  options={{
-                    pageSize: 10,
-                    pageSizeOptions: [5, 10],
-                    padding: 'dense'
-                  }}
+                  options={tableOptions}
                 />
               )}
-              {/* {user &&
-                    bookArr.map(book => {
-                      const { id, title, author, rating, readCount } = book;
-                      return (
-                        <TableRow key={id}>
-                          <TableCell className={classes.cell}>
-                            {title}
-                          </TableCell>
-                          <TableCell className={classes.cell}>
-                            {author}
-                          </TableCell>
-                          <TableCell align="center" className={classes.cell}>
-                            {averageRating(rating)}
-                          </TableCell>
-                          <TableCell align="center" className={classes.cell}>
-                            {readCount}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })} */}
             </Paper>
           </>
         );

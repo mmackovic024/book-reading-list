@@ -15,8 +15,27 @@ export default ({ selectedValue, handleChange }) => {
       >
         <FormControlLabel
           style={{ margin: '0rem 1rem 0rem 2rem' }}
+          value="users"
+          control={
+            <Radio
+              color="primary"
+              checked={selectedValue === 'users'}
+              name="users"
+            />
+          }
+          label="List of users"
+          labelPlacement="end"
+        />
+        <FormControlLabel
+          style={{ margin: '0rem 1rem 0rem 2rem' }}
           value="all"
-          control={<Radio checked={selectedValue === 'all'} name="all" />}
+          control={
+            <Radio
+              color="primary"
+              checked={selectedValue === 'all'}
+              name="all"
+            />
+          }
           label="All books in database"
           labelPlacement="end"
         />

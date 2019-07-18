@@ -13,7 +13,7 @@ export default ({ open, handleClose, signIn, error }) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const hadleSignin = () => signIn({ variables: { username, password } });
+  const handleSignin = () => signIn({ variables: { username, password } });
 
   if (error) {
     const e = error.message.split(':');
@@ -60,13 +60,16 @@ export default ({ open, handleClose, signIn, error }) => {
               required
               autoComplete="current-password"
               onChange={({ target: { value } }) => setPassword(value)}
+              onKeyUp={e => {
+                if (e.keyCode === 13) handleSignin();
+              }}
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={hadleSignin} color="primary">
+            <Button onClick={handleSignin} color="primary">
               Sign in
             </Button>
           </DialogActions>
