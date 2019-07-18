@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, CircularProgress } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { createHttpLink } from 'apollo-link-http';
@@ -30,6 +31,17 @@ const GET_ME = gql`
   }
 `;
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    paddingTop: '8rem',
+    margin: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      margin: '2rem 0'
+    }
+  },
+  progres: { position: 'relative', left: '50%', marginTop: '5rem' }
+}));
+
 const httpLink = createHttpLink({
   uri: '/graphql'
 });
@@ -48,7 +60,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+// =================================================================
 export default () => {
+  const classes = useStyles();
   return (
     <ApolloProvider client={client}>
       <Query
@@ -68,7 +82,7 @@ export default () => {
                 size={50}
                 thickness={3}
                 variant="indeterminate"
-                style={{ position: 'relative', left: '50%', marginTop: '5rem' }}
+                className={classes.progres}
               />
             );
           if (error) {
@@ -78,7 +92,7 @@ export default () => {
           return (
             <>
               <Navbar user={data.Me} />
-              <Container style={{ paddingTop: '8rem' }}>
+              <Container className={classes.root}>
                 <Data user={data.Me} />
               </Container>
             </>

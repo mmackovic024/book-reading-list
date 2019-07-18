@@ -1,6 +1,7 @@
 import React from 'react';
 import { Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 
+// =================================================================
 export default ({ selectedValue, handleChange }) => {
   return (
     <>
@@ -29,7 +30,7 @@ export default ({ selectedValue, handleChange }) => {
               name="list"
             />
           }
-          label="Books in Your reading list"
+          label="Your reading list"
           labelPlacement="end"
         />
       </RadioGroup>

@@ -1,16 +1,8 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  CircularProgress
-} from '@material-ui/core';
+import { Typography, Paper, CircularProgress } from '@material-ui/core';
+import MaterialTable from 'material-table';
 import { makeStyles } from '@material-ui/core/styles';
 import Warning from './Warning';
 import ListSelect from './ListSelect';
@@ -27,9 +19,12 @@ const GET_BOOKS = gql`
   }
 `;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '80%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    },
     height: '90%',
     margin: '2rem auto',
     overflowX: 'auto',
@@ -42,6 +37,7 @@ const useStyles = makeStyles(() => ({
   cell: { fontSize: '0.95rem' }
 }));
 
+// =================================================================
 export default ({ user }) => {
   const [selectedValue, setSelectedValue] = React.useState('all');
 
@@ -54,9 +50,12 @@ export default ({ user }) => {
   return (
     <Query query={GET_BOOKS}>
       {({ loading, error, data }) => {
-        let bookArr = [];
+        let bookArr = data.Books && [...data.Books];
         if (user) {
-          bookArr = selectedValue === 'all' ? data.Books : user.books;
+          bookArr =
+            selectedValue === 'all'
+              ? data.Books && [...data.Books]
+              : user.books && [...user.books];
         }
 
         if (loading)
@@ -78,16 +77,21 @@ export default ({ user }) => {
         const averageRating = rating =>
           (rating.reduce((acc, curr) => acc + curr) / rating.length).toFixed(1);
 
+        if (typeof bookArr[0].rating === 'array')
+          return bookArr.forEach(
+            book => (book.rating = averageRating(book.rating))
+          );
+
         return (
           <>
             {!user && (
               <Typography
                 className={classes.title}
-                variant="h5"
+                variant="body1"
                 align="center"
                 gutterBottom
               >
-                All books in database
+                You can sign in with username: test and password: test
               </Typography>
             )}
             {user && (
@@ -97,41 +101,43 @@ export default ({ user }) => {
               />
             )}
             <Paper className={classes.root}>
-              <Table className={classes.table} size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={classes.cell}>Title</TableCell>
-                    <TableCell className={classes.cell}>Author</TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      Rating
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      Read Count
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {!user &&
-                    data.Books.map(book => {
-                      const { id, title, author, rating, readCount } = book;
-                      return (
-                        <TableRow key={id}>
-                          <TableCell className={classes.cell}>
-                            {title}
-                          </TableCell>
-                          <TableCell className={classes.cell}>
-                            {author}
-                          </TableCell>
-                          <TableCell align="center" className={classes.cell}>
-                            {averageRating(rating)}
-                          </TableCell>
-                          <TableCell align="center" className={classes.cell}>
-                            {readCount}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {user &&
+              {selectedValue === 'all' && (
+                <MaterialTable
+                  className={classes.table}
+                  title="All books in database"
+                  columns={[
+                    { title: 'Title', field: 'title', defaultSort: 'asc' },
+                    { title: 'Author', field: 'author' },
+                    { title: 'Rating', field: 'rating', type: 'numeric' },
+                    { title: 'Read count', field: 'readCount', type: 'numeric' }
+                  ]}
+                  data={bookArr}
+                  options={{
+                    pageSize: 10,
+                    pageSizeOptions: [5, 10],
+                    padding: 'dense'
+                  }}
+                />
+              )}
+              {selectedValue === 'list' && (
+                <MaterialTable
+                  className={classes.table}
+                  title={'Your reading list'}
+                  columns={[
+                    { title: 'Title', field: 'title', defaultSort: 'asc' },
+                    { title: 'Author', field: 'author' },
+                    { title: 'Rating', field: 'rating', type: 'numeric' },
+                    { title: 'Read count', field: 'readCount', type: 'numeric' }
+                  ]}
+                  data={bookArr}
+                  options={{
+                    pageSize: 10,
+                    pageSizeOptions: [5, 10],
+                    padding: 'dense'
+                  }}
+                />
+              )}
+              {/* {user &&
                     bookArr.map(book => {
                       const { id, title, author, rating, readCount } = book;
                       return (
@@ -150,9 +156,7 @@ export default ({ user }) => {
                           </TableCell>
                         </TableRow>
                       );
-                    })}
-                </TableBody>
-              </Table>
+                    })} */}
             </Paper>
           </>
         );

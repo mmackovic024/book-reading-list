@@ -62,15 +62,12 @@ export default ({ user }) => {
                     open={openEdit}
                     handleClose={handleCloseEdit}
                   />
-                  <Typography
-                    variant="body2"
-                    align="center"
-                    style={{ marginLeft: 'auto' }}
-                  >
+                  <Typography variant="body2" align="center">
                     Username:{' '}
                     {
                       <>
                         <Button
+                          style={{ textTransform: 'none' }}
                           color="secondary"
                           variant="contained"
                           size="small"
@@ -103,7 +100,6 @@ export default ({ user }) => {
                   <Button
                     color="secondary"
                     variant="outlined"
-                    style={{ marginLeft: 'auto' }}
                     onClick={handleSignUp}
                   >
                     Sign UP

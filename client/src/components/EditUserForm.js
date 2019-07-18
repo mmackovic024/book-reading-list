@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle
 } from '@material-ui/core';
+import DeleteUser from './DeleteUser';
 
 export default ({ user, open, handleClose, editUser, error }) => {
   const [username, setUsername] = React.useState(user.username);
@@ -86,10 +87,15 @@ export default ({ user, open, handleClose, editUser, error }) => {
             />
           </DialogContent>
           <DialogActions>
+            <DeleteUser handleClose={handleClose} user={user} />
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleEdit} color="primary">
+            <Button
+              onClick={handleEdit}
+              color="primary"
+              disabled={user.username === 'test'}
+            >
               Save Changes
             </Button>
           </DialogActions>
