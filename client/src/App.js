@@ -12,7 +12,6 @@ import Navbar from './components/Navbar';
 import Data from './components/Data';
 import Warning from './components/Warning';
 import { signOut } from './components/SignOutButton';
-// import Background from './antique-black-and-white-books-33283.jpg';
 
 export const WarningContext = createContext(null);
 

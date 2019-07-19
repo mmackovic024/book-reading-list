@@ -23,7 +23,6 @@ const useStyles = makeStyles(theme => ({
 export default () => {
   const classes = useStyles();
   const { warning, setWarning, reload } = useContext(WarningContext);
-  // const [open, setOpen] = React.useState(true);
 
   const handleClose = client => {
     setWarning({ open: false, msg: '' });

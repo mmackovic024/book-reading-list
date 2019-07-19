@@ -4,7 +4,6 @@ import { Query } from 'react-apollo';
 import { Typography, Paper, CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { makeStyles } from '@material-ui/core/styles';
-// import Warning from './Warning';
 import ListSelect from './ListSelect';
 import UsersTable from './UsersTable';
 import ListTable from './ListTable';

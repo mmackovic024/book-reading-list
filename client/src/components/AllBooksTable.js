@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
-// import Warning from './Warning';
 import { GET_ME } from '../App';
 import { GET_BOOKS } from './Data';
 import { WarningContext } from '../App';
