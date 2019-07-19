@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import { Container, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ApolloClient from 'apollo-client';
@@ -14,6 +14,8 @@ import Warning from './components/Warning';
 import { signOut } from './components/SignOutButton';
 // import Background from './antique-black-and-white-books-33283.jpg';
 
+export const WarningContext = createContext(null);
+
 const GET_ME = gql`
   {
     Me {
@@ -26,6 +28,7 @@ const GET_ME = gql`
         title
         author
         rating
+        avgRating
         readCount
       }
     }
@@ -64,6 +67,9 @@ const useStyles = makeStyles(theme => ({
 
 // =================================================================
 export default () => {
+  const [warning, setWarning] = React.useState({ open: false, msg: '' });
+  const [reload, setReload] = React.useState(true);
+
   const classes = useStyles();
 
   return (
@@ -88,16 +94,23 @@ export default () => {
                 className={classes.progres}
               />
             );
+
           if (error) {
-            return <Warning message={error.message} />;
+            console.log('APP COMPONENT ERROR   ====  ' + error.message);
+            setWarning({ open: true, msg: error.message });
           }
 
           return (
             <>
-              <Navbar user={data.Me} />
-              <Container className={classes.root}>
-                <Data user={data.Me} />
-              </Container>
+              <WarningContext.Provider
+                value={{ warning, setWarning, reload, setReload }}
+              >
+                <Warning />
+                <Navbar user={data.Me} />
+                <Container className={classes.root}>
+                  <Data user={data.Me} />
+                </Container>
+              </WarningContext.Provider>
             </>
           );
         }}

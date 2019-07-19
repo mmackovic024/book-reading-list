@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
-import Warning from './Warning';
+// import Warning from './Warning';
 
 const GET_USERS = gql`
   {
@@ -42,7 +42,7 @@ export default () => {
             />
           );
 
-        if (error) return <Warning message={error.message} />;
+        if (error) console.log(error.message);
 
         return (
           <>

@@ -6,6 +6,7 @@ module.exports = gql`
     title: String!
     author: String!
     rating: [Int]!
+    avgRating: String
     readCount: Int
     users: [User]
   }

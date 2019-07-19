@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { Typography, Paper, CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { makeStyles } from '@material-ui/core/styles';
-import Warning from './Warning';
+// import Warning from './Warning';
 import ListSelect from './ListSelect';
 import UsersTable from './UsersTable';
 import ListTable from './ListTable';
+import AllBooksTable from './AllBooksTable';
+import { WarningContext } from '../App';
 
-const GET_BOOKS = gql`
+export const GET_BOOKS = gql`
   {
     Books {
       id
       title
       author
       rating
+      avgRating
       readCount
     }
   }
@@ -55,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 // =================================================================
 export default ({ user }) => {
   const [selectedValue, setSelectedValue] = React.useState('all');
+  const { setWarning } = useContext(WarningContext);
 
   const handleChange = event => {
     setSelectedValue(event.target.value);
@@ -69,19 +73,15 @@ export default ({ user }) => {
     actionsColumnIndex: -1
   };
 
-  const actions = [
-    {
-      icon: 'add',
-      tooltip: 'Add book to reading list',
-      onClick: (e, book) =>
-        console.log('Add book ' + book.title + ' to Your list')
-    }
-  ];
-
   const columns = [
     { title: 'Title', field: 'title', defaultSort: 'asc' },
-    { title: 'Author', field: 'author' },
-    { title: 'Rating', field: 'rating', type: 'numeric' },
+    { title: 'Author', field: 'author', cellStyle: { padding: 0 } },
+    {
+      title: 'Rating',
+      field: 'avgRating',
+      type: 'numeric',
+      cellStyle: { padding: 0 }
+    },
     { title: 'Read count', field: 'readCount', type: 'numeric' }
   ];
 
@@ -111,16 +111,11 @@ export default ({ user }) => {
               }}
             />
           );
-        if (error) return <Warning message={error.message} />;
 
-        const averageRating = rating => {
-          return (
-            rating.reduce((acc, curr) => acc + curr) / rating.length
-          ).toFixed(1);
-        };
-
-        if (data.Books && bookArr.length > 0 && bookArr[0].rating.length > 0)
-          bookArr.forEach(book => (book.rating = +averageRating(book.rating)));
+        if (error) {
+          console.log('DATA COMPONENT ERROR  ====  ' + error.message);
+          setWarning({ open: true, msg: error.message });
+        }
 
         return (
           <>
@@ -146,14 +141,23 @@ export default ({ user }) => {
               }
             >
               {selectedValue === 'users' && <UsersTable />}
-              {selectedValue === 'all' && (
+              {selectedValue === 'all' && !user && (
                 <MaterialTable
                   className={classes.table}
                   title="All books in database"
                   columns={columns}
                   data={bookArr}
                   options={tableOptions}
-                  actions={user ? actions : []}
+                />
+              )}
+              {selectedValue === 'all' && user && (
+                <AllBooksTable
+                  user={user}
+                  className={classes.table}
+                  title="All books in database"
+                  columns={columns}
+                  data={bookArr}
+                  options={tableOptions}
                 />
               )}
               {selectedValue === 'list' && (

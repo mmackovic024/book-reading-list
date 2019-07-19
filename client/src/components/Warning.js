@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import { Snackbar, SnackbarContent, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Error, Close } from '@material-ui/icons';
+import { WarningContext } from '../App';
 
 const useStyles = makeStyles(theme => ({
   error: {
@@ -19,13 +20,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default props => {
+export default () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const { warning, setWarning, reload } = useContext(WarningContext);
+  // const [open, setOpen] = React.useState(true);
 
   const handleClose = client => {
-    setOpen(false);
-    client.resetStore();
+    setWarning({ open: false, msg: '' });
+    if (reload) client.resetStore();
   };
 
   return (
@@ -36,8 +38,9 @@ export default props => {
             vertical: 'top',
             horizontal: 'center'
           }}
-          open={open}
-          autoHideDuration={5000}
+          open={warning.open}
+          autoHideDuration={3000}
+          onClose={() => setWarning({ open: false, msg: '' })}
         >
           <SnackbarContent
             className={classes.error}
@@ -45,7 +48,7 @@ export default props => {
             message={
               <span id="client-snackbar" className={classes.message}>
                 <Error className={classes.icon} />
-                {props.message}
+                {warning.msg}
               </span>
             }
             action={

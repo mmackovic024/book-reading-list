@@ -71,13 +71,13 @@ module.exports = {
       return me
         .addBook(bookId)
         .then(() => true)
-        .catch(err => 'Error adding book to list ==> ' + err);
+        .catch(() => new Error('Book is already on Your list'));
     },
     removeBookFromList: (_, { bookId }, { me }) => {
       return me
         .removeBook(bookId)
         .then(() => true)
-        .catch(err => 'Error removing book from list ==> ' + err);
+        .catch(err => new Error('Error removing book from list'));
     }
   },
   User: {

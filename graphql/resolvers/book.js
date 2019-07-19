@@ -51,6 +51,12 @@ module.exports = {
     }
   },
   Book: {
+    avgRating: book =>
+      book.rating.length > 0
+        ? (
+            book.rating.reduce((acc, curr) => acc + +curr) / book.rating.length
+          ).toFixed(1)
+        : 0,
     readCount: book => book.getUsers().then(users => users.length),
     users: book => book.getUsers()
   }

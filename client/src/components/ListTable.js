@@ -1,10 +1,11 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { Mutation, ApolloConsumer } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
-import Warning from './Warning';
+// import Warning from './Warning';
 import { GET_ME } from '../App';
+import { GET_BOOKS } from './Data';
 
 const REMOVE_BOOK = gql`
   mutation removeBookFromList($bookId: ID!) {
@@ -15,51 +16,46 @@ const REMOVE_BOOK = gql`
 // =================================================================
 export default props => {
   return (
-    <ApolloConsumer>
-      {client => {
+    <Mutation mutation={REMOVE_BOOK}>
+      {(removeBook, { loading, error }) => {
+        if (loading)
+          return (
+            <CircularProgress
+              disableShrink
+              size={40}
+              thickness={3}
+              variant="indeterminate"
+              style={{
+                position: 'relative',
+                left: '50%',
+                marginTop: '8rem'
+              }}
+            />
+          );
+
+        if (error)
+          console.log('LIST TABLE COMPONENT ERROR  ====  ' + error.message);
+
         return (
-          <Mutation mutation={REMOVE_BOOK}>
-            {(removeBook, { loading, error }) => {
-              if (loading)
-                return (
-                  <CircularProgress
-                    disableShrink
-                    size={40}
-                    thickness={3}
-                    variant="indeterminate"
-                    style={{
-                      position: 'relative',
-                      left: '50%',
-                      marginTop: '8rem'
-                    }}
-                  />
-                );
-
-              if (error) return <Warning message={error.message} />;
-
-              return (
-                <>
-                  <MaterialTable
-                    {...props}
-                    actions={[
-                      {
-                        icon: 'delete',
-                        tooltip: 'Remove book from list',
-                        onClick: (event, book) => {
-                          removeBook({
-                            variables: { bookId: book.id },
-                            refetchQueries: [{ query: GET_ME }]
-                          });
-                        }
-                      }
-                    ]}
-                  />
-                </>
-              );
-            }}
-          </Mutation>
+          <>
+            <MaterialTable
+              {...props}
+              actions={[
+                {
+                  icon: 'delete',
+                  tooltip: 'Remove book from list',
+                  onClick: (event, book) => {
+                    removeBook({
+                      variables: { bookId: book.id },
+                      refetchQueries: [{ query: GET_ME }, { query: GET_BOOKS }]
+                    });
+                  }
+                }
+              ]}
+            />
+          </>
         );
       }}
-    </ApolloConsumer>
+    </Mutation>
   );
 };
