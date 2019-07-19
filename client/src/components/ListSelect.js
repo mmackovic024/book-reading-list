@@ -36,7 +36,7 @@ export default ({ selectedValue, handleChange }) => {
               name="all"
             />
           }
-          label="All books in database"
+          label="List of books"
           labelPlacement="end"
         />
         <FormControlLabel

@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Warning from './Warning';
 import ListSelect from './ListSelect';
 import UsersTable from './UsersTable';
+import ListTable from './ListTable';
 
 const GET_BOOKS = gql`
   {
@@ -24,6 +25,19 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '80%',
     [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    },
+    height: '90%',
+    margin: '2rem auto',
+    overflowX: 'auto',
+    overflowY: 'auto'
+  },
+  users: {
+    width: '40%',
+    [theme.breakpoints.down('sm')]: {
+      width: '60%'
+    },
+    [theme.breakpoints.down('xs')]: {
       width: '100%'
     },
     height: '90%',
@@ -51,8 +65,18 @@ export default ({ user }) => {
   const tableOptions = {
     pageSize: 10,
     pageSizeOptions: [5, 10],
-    padding: 'dense'
+    padding: 'dense',
+    actionsColumnIndex: -1
   };
+
+  const actions = [
+    {
+      icon: 'add',
+      tooltip: 'Add book to reading list',
+      onClick: (e, book) =>
+        console.log('Add book ' + book.title + ' to Your list')
+    }
+  ];
 
   const columns = [
     { title: 'Title', field: 'title', defaultSort: 'asc' },
@@ -65,6 +89,7 @@ export default ({ user }) => {
     <Query query={GET_BOOKS}>
       {({ loading, error, data }) => {
         let bookArr = data.Books && [...data.Books];
+
         if (user) {
           bookArr =
             selectedValue === 'all'
@@ -115,7 +140,11 @@ export default ({ user }) => {
                 handleChange={handleChange}
               />
             )}
-            <Paper className={classes.root}>
+            <Paper
+              className={
+                selectedValue === 'users' ? classes.users : classes.root
+              }
+            >
               {selectedValue === 'users' && <UsersTable />}
               {selectedValue === 'all' && (
                 <MaterialTable
@@ -124,10 +153,11 @@ export default ({ user }) => {
                   columns={columns}
                   data={bookArr}
                   options={tableOptions}
+                  actions={user ? actions : []}
                 />
               )}
               {selectedValue === 'list' && (
-                <MaterialTable
+                <ListTable
                   className={classes.table}
                   title={'Your reading list'}
                   columns={columns}

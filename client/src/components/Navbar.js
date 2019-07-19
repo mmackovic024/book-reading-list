@@ -7,11 +7,13 @@ import {
   Typography,
   Grid
 } from '@material-ui/core';
+import blue from '@material-ui/core/colors/blue';
 import SignIn from './SignIn';
 import SignOutButton from './SignOutButton';
 import SignUp from './SignUp';
 import EditUser from './EditUser';
 
+// =================================================================
 export default ({ user }) => {
   const [openIn, setOpenIn] = React.useState(false);
   const [openUp, setOpenUp] = React.useState(false);
@@ -40,7 +42,11 @@ export default ({ user }) => {
   return (
     <>
       <CssBaseline />
-      <AppBar id="nav-bar" position="fixed" style={{ padding: '0.375rem 0' }}>
+      <AppBar
+        id="nav-bar"
+        position="fixed"
+        style={{ backgroundColor: blue[300], padding: '0.375rem 0' }}
+      >
         <Toolbar>
           <Grid
             container
@@ -68,7 +74,7 @@ export default ({ user }) => {
                       <>
                         <Button
                           style={{ textTransform: 'none' }}
-                          color="secondary"
+                          color="primary"
                           variant="contained"
                           size="small"
                           onClick={handleEdit}
@@ -99,7 +105,7 @@ export default ({ user }) => {
                   </Button>
                   <SignUp open={openUp} handleClose={handleCloseUp} />
                   <Button
-                    color="secondary"
+                    color="primary"
                     variant="outlined"
                     onClick={handleSignUp}
                     style={{ margin: '0 0.5rem' }}

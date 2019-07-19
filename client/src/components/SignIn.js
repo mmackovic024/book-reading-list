@@ -31,11 +31,11 @@ export default ({ open, handleClose }) => {
                 return (
                   <CircularProgress
                     disableShrink
-                    size={40}
+                    size={30}
                     thickness={2}
                     variant="indeterminate"
                     style={{
-                      position: 'relative',
+                      position: 'absolute',
                       left: '50%',
                       marginTop: '5rem'
                     }}

@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import Data from './components/Data';
 import Warning from './components/Warning';
 import { signOut } from './components/SignOutButton';
+// import Background from './antique-black-and-white-books-33283.jpg';
 
 const GET_ME = gql`
   {
@@ -31,16 +32,7 @@ const GET_ME = gql`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: '8rem',
-    margin: 'auto',
-    [theme.breakpoints.down('sm')]: {
-      margin: '2rem 0'
-    }
-  },
-  progres: { position: 'relative', left: '50%', marginTop: '5rem' }
-}));
+export { GET_ME };
 
 const httpLink = createHttpLink({
   uri: '/graphql'
@@ -60,9 +52,20 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    paddingTop: '8rem',
+    [theme.breakpoints.down('sm')]: {
+      margin: '2rem 0'
+    }
+  },
+  progres: { position: 'relative', left: '50%', marginTop: '5rem' }
+}));
+
 // =================================================================
 export default () => {
   const classes = useStyles();
+
   return (
     <ApolloProvider client={client}>
       <Query

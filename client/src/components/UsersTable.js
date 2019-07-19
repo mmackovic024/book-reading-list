@@ -48,7 +48,6 @@ export default () => {
           <>
             {data.Users && (
               <MaterialTable
-                style={{ minWidth: 650 }}
                 title="All registered users"
                 columns={[
                   { title: 'Username', field: 'username', defaultSort: 'asc' },
