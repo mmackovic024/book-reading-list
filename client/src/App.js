@@ -73,15 +73,7 @@ export default () => {
 
   return (
     <ApolloProvider client={client}>
-      <Query
-        query={GET_ME}
-        onError={err => {
-          if (err.networkError.statusCode === 400) {
-            signOut(client);
-          }
-        }}
-        fetchPolicy="cache-and-network"
-      >
+      <Query query={GET_ME} fetchPolicy="cache-and-network">
         {({ loading, error, data }) => {
           if (loading)
             return (
@@ -96,7 +88,9 @@ export default () => {
 
           if (error) {
             console.log('APP COMPONENT ERROR   ====  ' + error.message);
-            setWarning({ open: true, msg: error.message });
+            if (error.networkError.statusCode === 400) {
+              signOut(client);
+            }
           }
 
           return (
@@ -105,10 +99,14 @@ export default () => {
                 value={{ warning, setWarning, reload, setReload }}
               >
                 <Warning />
-                <Navbar user={data.Me} />
-                <Container className={classes.root}>
-                  <Data user={data.Me} />
-                </Container>
+                {data && (
+                  <>
+                    <Navbar user={data.Me} />
+                    <Container className={classes.root}>
+                      <Data user={data.Me} />
+                    </Container>
+                  </>
+                )}
               </WarningContext.Provider>
             </>
           );

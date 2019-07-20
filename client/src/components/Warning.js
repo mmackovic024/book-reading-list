@@ -39,7 +39,7 @@ export default () => {
           }}
           open={warning.open}
           autoHideDuration={3000}
-          onClose={() => setWarning({ open: false, msg: '' })}
+          onClose={handleClose}
         >
           <SnackbarContent
             className={classes.error}

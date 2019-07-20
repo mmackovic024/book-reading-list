@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
@@ -6,6 +6,7 @@ import MaterialTable from 'material-table';
 import { GET_ME } from '../App';
 import { GET_BOOKS } from './Data';
 import { WarningContext } from '../App';
+import AddRating from './AddRating';
 
 const ADD_BOOK_TO_LIST = gql`
   mutation addBookToList($bookId: ID!) {
@@ -16,6 +17,8 @@ const ADD_BOOK_TO_LIST = gql`
 // =================================================================
 export default props => {
   const { setWarning, setReload } = useContext(WarningContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [bookId, setBookId] = useState(null);
 
   const {
     user: { books }
@@ -46,6 +49,11 @@ export default props => {
           setWarning({ open: true, msg });
         }
 
+        const handleRating = (e, book) => {
+          setBookId(book.id);
+          setAnchorEl(e.currentTarget);
+        };
+
         return (
           <>
             <MaterialTable
@@ -70,12 +78,22 @@ export default props => {
                   }
                 },
                 {
+                  icon: 'star_rate',
+                  tooltip: 'Rate book',
+                  onClick: (e, book) => handleRating(e, book)
+                },
+                {
                   icon: 'add',
                   tooltip: 'Add new book to database',
                   isFreeAction: true,
                   onClick: (e, book) => console.log('Add new book to database')
                 }
               ]}
+            />
+            <AddRating
+              bookId={bookId}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
             />
           </>
         );
