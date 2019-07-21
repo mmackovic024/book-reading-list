@@ -16,7 +16,6 @@ export const GET_BOOKS = gql`
       id
       title
       author
-      rating
       avgRating
       readCount
     }
@@ -113,7 +112,7 @@ export default ({ user }) => {
 
         if (error) {
           console.log('DATA COMPONENT ERROR  ====  ' + error.message);
-          setWarning({ open: true, msg: error.message });
+          setWarning({ open: true, msg: error.message, reload: false });
         }
 
         return (

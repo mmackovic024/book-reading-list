@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CssBaseline,
   AppBar,
@@ -15,9 +15,9 @@ import EditUser from './EditUser';
 
 // =================================================================
 export default ({ user }) => {
-  const [openIn, setOpenIn] = React.useState(false);
-  const [openUp, setOpenUp] = React.useState(false);
-  const [openEdit, setOpenEdit] = React.useState(false);
+  const [openIn, setOpenIn] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
 
   const handleSignIn = () => {
     setOpenIn(true);

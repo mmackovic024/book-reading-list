@@ -20,13 +20,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// =================================================================
 export default () => {
   const classes = useStyles();
-  const { warning, setWarning, reload } = useContext(WarningContext);
+  const { warning, setWarning } = useContext(WarningContext);
 
   const handleClose = client => {
-    setWarning({ open: false, msg: '' });
-    if (reload) client.resetStore();
+    if (warning.reload) {
+      setWarning({ open: false, msg: '', reload: false });
+      client.resetStore();
+    } else {
+      setWarning({ open: false, msg: '', reload: false });
+    }
   };
 
   return (
@@ -38,8 +43,8 @@ export default () => {
             horizontal: 'center'
           }}
           open={warning.open}
-          autoHideDuration={3000}
-          onClose={handleClose}
+          autoHideDuration={2000}
+          onClose={() => handleClose(client)}
         >
           <SnackbarContent
             className={classes.error}

@@ -42,6 +42,8 @@ export default ({ bookId, anchorEl, setAnchorEl }) => {
             />
           );
 
+        if (error) console.log(error);
+
         return (
           <Menu
             id="simple-menu"

@@ -4,9 +4,9 @@ import { Mutation } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { GET_ME } from '../App';
-import { GET_BOOKS } from './Data';
 import { WarningContext } from '../App';
 import AddRating from './AddRating';
+import CreateBook from './CreateBook';
 
 const ADD_BOOK_TO_LIST = gql`
   mutation addBookToList($bookId: ID!) {
@@ -16,9 +16,21 @@ const ADD_BOOK_TO_LIST = gql`
 
 // =================================================================
 export default props => {
-  const { setWarning, setReload } = useContext(WarningContext);
+  const { setWarning } = useContext(WarningContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookId, setBookId] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const handleCreateBook = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const handleRating = (e, book) => {
+    setBookId(book.id);
+    setAnchorEl(e.currentTarget);
+  };
 
   const {
     user: { books }
@@ -43,16 +55,9 @@ export default props => {
           );
 
         if (error) {
-          const e = error.message.split(':');
-          const msg = e[e.length - 1];
-          console.log('ALL BOOKS COMPONENT ERROR  ====  ' + msg);
-          setWarning({ open: true, msg });
+          console.log('ALL BOOKS TABLE ERROR OBJECT ');
+          console.log(error);
         }
-
-        const handleRating = (e, book) => {
-          setBookId(book.id);
-          setAnchorEl(e.currentTarget);
-        };
 
         return (
           <>
@@ -66,14 +71,14 @@ export default props => {
                     if (!books.map(b => b.id).includes(book.id)) {
                       addBookToList({
                         variables: { bookId: book.id },
-                        refetchQueries: [
-                          { query: GET_ME },
-                          { query: GET_BOOKS }
-                        ]
+                        refetchQueries: [{ query: GET_ME }]
                       });
-                    } else {
-                      setReload(false);
-                      setWarning({ open: true, msg: 'Already on list' });
+                    } else if (!error) {
+                      setWarning({
+                        open: true,
+                        msg: 'Already on list',
+                        reload: false
+                      });
                     }
                   }
                 },
@@ -86,7 +91,7 @@ export default props => {
                   icon: 'add',
                   tooltip: 'Add new book to database',
                   isFreeAction: true,
-                  onClick: (e, book) => console.log('Add new book to database')
+                  onClick: () => handleCreateBook()
                 }
               ]}
             />
@@ -95,6 +100,7 @@ export default props => {
               anchorEl={anchorEl}
               setAnchorEl={setAnchorEl}
             />
+            <CreateBook open={open} handleClose={handleClose} />
           </>
         );
       }}

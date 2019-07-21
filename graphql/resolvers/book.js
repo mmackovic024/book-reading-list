@@ -8,7 +8,6 @@ module.exports = {
   },
   Mutation: {
     createBook: (_, { bookInput }, { models, me }) => {
-      if (!me) throw new Error('Not logged in!');
       return models.Book.findOrCreate({
         where: {
           title: bookInput.title
@@ -28,7 +27,6 @@ module.exports = {
         .catch(err => err);
     },
     editBook: (_, { id, title, author }, { models, me }) => {
-      if (!me) throw new Error('Not logged in!');
       return models.Book.update(
         { title: title, author: author },
         { where: { id: id }, returning: true, plain: true }
@@ -37,7 +35,6 @@ module.exports = {
         .catch(err => err);
     },
     addRating: (_, { id, rating }, { models, me }) => {
-      if (!me) throw new Error('Not logged in!');
       return models.Book.findOne({ where: { id: id } })
         .then(book => {
           book.rating = rating;

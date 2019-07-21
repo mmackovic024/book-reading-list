@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { Container, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ApolloClient from 'apollo-client';
@@ -6,8 +6,9 @@ import { ApolloProvider } from 'react-apollo';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import { onError } from 'apollo-link-error';
+import gql from 'graphql-tag';
 import Navbar from './components/Navbar';
 import Data from './components/Data';
 import Warning from './components/Warning';
@@ -26,7 +27,6 @@ const GET_ME = gql`
         id
         title
         author
-        rating
         avgRating
         readCount
       }
@@ -49,8 +49,28 @@ const authLink = setContext((_, { headers }) => {
   return { headers };
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, locations, path }) => {
+      console.log('GraphQL error', message);
+
+      if (message.split(':')[1] === 'Session expired, sign in again.') {
+        signOut(client);
+      }
+    });
+  }
+
+  if (networkError) {
+    console.log('Network error', networkError);
+
+    if (networkError.statusCode === 400) {
+      signOut(client);
+    }
+  }
+});
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: errorLink.concat(authLink.concat(httpLink)),
   cache: new InMemoryCache()
 });
 
@@ -66,8 +86,11 @@ const useStyles = makeStyles(theme => ({
 
 // =================================================================
 export default () => {
-  const [warning, setWarning] = React.useState({ open: false, msg: '' });
-  const [reload, setReload] = React.useState(true);
+  const [warning, setWarning] = useState({
+    open: false,
+    msg: '',
+    reload: false
+  });
 
   const classes = useStyles();
 
@@ -87,17 +110,13 @@ export default () => {
             );
 
           if (error) {
-            console.log('APP COMPONENT ERROR   ====  ' + error.message);
-            if (error.networkError.statusCode === 400) {
-              signOut(client);
-            }
+            console.log('APP COMPONENT ERROR   ====  ');
+            console.log(error);
           }
 
           return (
             <>
-              <WarningContext.Provider
-                value={{ warning, setWarning, reload, setReload }}
-              >
+              <WarningContext.Provider value={{ warning, setWarning }}>
                 <Warning />
                 {data && (
                   <>
