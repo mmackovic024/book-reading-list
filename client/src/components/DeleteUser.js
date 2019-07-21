@@ -49,9 +49,7 @@ export default ({ user, handleClose }) => {
                   variant="contained"
                   size="small"
                   onClick={deleteUser}
-                  disabled={
-                    user.username === 'test' || user.username === 'Mirko'
-                  }
+                  disabled={user.username === 'test'}
                 >
                   DELETE USER
                 </Button>
