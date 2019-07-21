@@ -80,9 +80,15 @@ export default ({ user }) => {
       title: 'Rating',
       field: 'avgRating',
       type: 'numeric',
+      editable: 'never',
       cellStyle: { padding: 0 }
     },
-    { title: 'Read count', field: 'readCount', type: 'numeric' }
+    {
+      title: 'Read count',
+      field: 'readCount',
+      type: 'numeric',
+      editable: 'never'
+    }
   ];
 
   return (
