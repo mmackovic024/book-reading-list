@@ -1,26 +1,9 @@
 import React, { useContext, useState } from 'react';
-import gql from 'graphql-tag';
-import { Mutation } from 'react-apollo';
-import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
-import { GET_ME } from '../App';
 import { WarningContext } from '../App';
 import AddRating from './AddRating';
 import CreateBook from './CreateBook';
-
-const ADD_BOOK_TO_LIST = gql`
-  mutation addBookToList($bookId: ID!) {
-    addBookToList(bookId: $bookId) {
-      id
-      avgRating
-      readCount
-      users {
-        id
-        bookCount
-      }
-    }
-  }
-`;
+import AddBookToList from './AddBookToList';
 
 // =================================================================
 export default props => {
@@ -28,6 +11,7 @@ export default props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookId, setBookId] = useState(null);
   const [open, setOpen] = useState(false);
+  const [info, setInfo] = useState({ open: false, msg: '', bookId: 0 });
 
   const handleCreateBook = () => {
     setOpen(true);
@@ -45,73 +29,49 @@ export default props => {
   } = props;
 
   return (
-    <Mutation mutation={ADD_BOOK_TO_LIST}>
-      {(addBookToList, { loading, error }) => {
-        if (loading)
-          return (
-            <CircularProgress
-              disableShrink
-              size={40}
-              thickness={3}
-              variant="indeterminate"
-              style={{
-                position: 'relative',
-                left: '50%',
-                marginTop: '8rem'
-              }}
-            />
-          );
-
-        if (error) {
-          console.log('ALL BOOKS TABLE ERROR OBJECT ');
-          console.log(error);
-        }
-
-        return (
-          <>
-            <MaterialTable
-              {...props}
-              actions={[
-                {
-                  icon: 'add',
-                  tooltip: 'Add book to reading list',
-                  onClick: (event, book) => {
-                    if (!books.map(b => b.id).includes(book.id)) {
-                      addBookToList({
-                        variables: { bookId: book.id },
-                        refetchQueries: [{ query: GET_ME }]
-                      });
-                    } else {
-                      setWarning({
-                        open: true,
-                        msg: 'Already on list',
-                        reload: false
-                      });
-                    }
-                  }
-                },
-                {
-                  icon: 'star_rate',
-                  tooltip: 'Rate book',
-                  onClick: (e, book) => handleRating(e, book)
-                },
-                {
-                  icon: 'add',
-                  tooltip: 'Add new book to database',
-                  isFreeAction: true,
-                  onClick: () => handleCreateBook()
-                }
-              ]}
-            />
-            <AddRating
-              bookId={bookId}
-              anchorEl={anchorEl}
-              setAnchorEl={setAnchorEl}
-            />
-            <CreateBook open={open} handleClose={handleClose} />
-          </>
-        );
-      }}
-    </Mutation>
+    <>
+      <MaterialTable
+        {...props}
+        actions={[
+          {
+            icon: 'add',
+            tooltip: 'Add book to reading list',
+            onClick: (event, book) => {
+              if (!books.map(b => b.id).includes(book.id)) {
+                setInfo({
+                  open: true,
+                  msg: `${book.title} added to Your list`,
+                  bookId: book.id
+                });
+              } else {
+                setWarning({
+                  open: true,
+                  msg: 'Already on list',
+                  reload: false
+                });
+              }
+            }
+          },
+          {
+            icon: 'star_rate',
+            tooltip: 'Rate book',
+            onClick: (e, book) => handleRating(e, book)
+          },
+          {
+            icon: 'add',
+            tooltip: 'Add new book to database',
+            isFreeAction: true,
+            onClick: () => handleCreateBook()
+          }
+        ]}
+      />
+      <AddRating
+        bookId={bookId}
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+      />
+      <CreateBook open={open} handleClose={handleClose} />
+      <AddBookToList info={info} setInfo={setInfo} />
+    </>
   );
 };

@@ -84,6 +84,7 @@ export default ({ open, handleClose, createBook, error }) => {
               id="rating"
               name="rating"
               type="number"
+              inputProps={{ min: 1, max: 5 }}
               value={rating}
               fullWidth
               required
