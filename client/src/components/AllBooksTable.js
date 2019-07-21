@@ -10,7 +10,15 @@ import CreateBook from './CreateBook';
 
 const ADD_BOOK_TO_LIST = gql`
   mutation addBookToList($bookId: ID!) {
-    addBookToList(bookId: $bookId)
+    addBookToList(bookId: $bookId) {
+      id
+      avgRating
+      readCount
+      users {
+        id
+        bookCount
+      }
+    }
   }
 `;
 
@@ -67,13 +75,13 @@ export default props => {
                 {
                   icon: 'add',
                   tooltip: 'Add book to reading list',
-                  onClick: (e, book) => {
+                  onClick: (event, book) => {
                     if (!books.map(b => b.id).includes(book.id)) {
                       addBookToList({
                         variables: { bookId: book.id },
                         refetchQueries: [{ query: GET_ME }]
                       });
-                    } else if (!error) {
+                    } else {
                       setWarning({
                         open: true,
                         msg: 'Already on list',

@@ -23,7 +23,7 @@ export default ({ selectedValue, handleChange }) => {
               name="users"
             />
           }
-          label="List of users"
+          label="Users"
           labelPlacement="end"
         />
         <FormControlLabel
@@ -36,7 +36,7 @@ export default ({ selectedValue, handleChange }) => {
               name="all"
             />
           }
-          label="List of books"
+          label="Books"
           labelPlacement="end"
         />
         <FormControlLabel

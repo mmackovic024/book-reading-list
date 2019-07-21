@@ -30,7 +30,7 @@ module.exports = gql`
     signIn(username: String!, password: String!): Token!
     editUser(userInput: UserInput): Token!
     deleteUser: Boolean!
-    addBookToList(bookId: ID!): Boolean!
-    removeBookFromList(bookId: ID!): Boolean!
+    addBookToList(bookId: ID!): Book!
+    removeBookFromList(bookId: ID!): Book!
   }
 `;

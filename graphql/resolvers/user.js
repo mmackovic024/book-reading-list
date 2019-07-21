@@ -67,17 +67,25 @@ module.exports = {
         .then(() => true)
         .catch(err => err);
     },
-    addBookToList: (_, { bookId }, { me }) => {
+    addBookToList: (_, { bookId }, { models, me }) => {
       return me
         .addBook(bookId)
-        .then(() => true)
+        .then(entry =>
+          models.Book.findByPk(entry[0].bookId)
+            .then(book => book)
+            .catch(e => e)
+        )
         .catch(() => new Error('Book is already on Your list'));
     },
-    removeBookFromList: (_, { bookId }, { me }) => {
+    removeBookFromList: (_, { bookId }, { models, me }) => {
       return me
         .removeBook(bookId)
-        .then(() => true)
-        .catch(err => new Error('Error removing book from list'));
+        .then(entry =>
+          models.Book.findByPk(bookId)
+            .then(book => book)
+            .catch(e => e)
+        )
+        .catch(() => new Error('Error removing book from list'));
     }
   },
   User: {

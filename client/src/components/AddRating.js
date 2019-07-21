@@ -9,7 +9,6 @@ const ADD_RATING = gql`
       id
       title
       author
-      rating
       avgRating
       readCount
     }

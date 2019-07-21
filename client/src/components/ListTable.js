@@ -4,11 +4,25 @@ import { Mutation } from 'react-apollo';
 import { CircularProgress } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { GET_ME } from '../App';
-import { GET_BOOKS } from './Data';
 
 const REMOVE_BOOK = gql`
   mutation removeBookFromList($bookId: ID!) {
-    removeBookFromList(bookId: $bookId)
+    removeBookFromList(bookId: $bookId) {
+      id
+      avgRating
+      readCount
+      users {
+        id
+        bookCount
+        books {
+          id
+          title
+          author
+          avgRating
+          readCount
+        }
+      }
+    }
   }
 `;
 
@@ -46,7 +60,7 @@ export default props => {
                   onClick: (event, book) => {
                     removeBook({
                       variables: { bookId: book.id },
-                      refetchQueries: [{ query: GET_ME }, { query: GET_BOOKS }]
+                      refetchQueries: [{ query: GET_ME }]
                     });
                   }
                 }
