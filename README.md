@@ -1,5 +1,7 @@
 ## Full stack demo web app
 
+[Live app on Heroku](https://book-reading-list-demo.herokuapp.com/)
+
 Full CRUD operations with authentication  
 - you can view all books in database  
 - you can sign up/sign in  
