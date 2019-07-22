@@ -44,7 +44,11 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-app.get('/', (req, res) => res.send('Welcome'));
+app.use(express.static('public'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(new Error('404 Not found')));
