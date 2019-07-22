@@ -20,7 +20,7 @@ Front-end
 - Material-UI
 - Apollo GraphQL client
 
-To run on You local computer:
+To run on local computer:
 - clone or download
 - run `npm i` in main folder (for installing server dependencies)
 - run `npm run client-install` in main folder (for installing client dependencies)
