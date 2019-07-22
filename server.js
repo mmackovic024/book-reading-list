@@ -7,9 +7,7 @@ const resolvers = require('./graphql/resolvers');
 const models = require('./models');
 const jwt = require('jsonwebtoken');
 
-// secret for JWT - delete in production
-const secret = 'secretfortoken';
-//======================================
+const secret = process.env.SECRET || 'secretfortoken';
 
 const getMe = async req => {
   const token = req.headers['authentication']
@@ -53,9 +51,6 @@ app.use((req, res, next) => next(new Error('404 Not found')));
 
 // error handler
 app.use((err, req, res, next) => {
-  console.log('***********************');
-  console.log(err);
-  console.log('***********************');
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

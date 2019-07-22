@@ -35,5 +35,8 @@
     "pg": "^7.7.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^6.0.0"
+  },
+  "repository": {
+    "url": "https://github.com/mmackovic024/book-reading-list.git"
   }
 }

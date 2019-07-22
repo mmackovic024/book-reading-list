@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 // =================================================================
-export default ({ info, handleClose, handleMutation }) => {
+export default ({ info, handleClose }) => {
   const classes = useStyles();
 
   return (
@@ -29,7 +29,6 @@ export default ({ info, handleClose, handleMutation }) => {
         horizontal: 'center'
       }}
       open={info.open}
-      onEnter={handleMutation}
       autoHideDuration={1000}
       onClose={handleClose}
     >

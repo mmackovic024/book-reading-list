@@ -54,11 +54,13 @@ export default props => {
           },
           {
             icon: 'star_rate',
+            iconProps: { style: { color: 'orange' } },
             tooltip: 'Rate book',
             onClick: (e, book) => handleRating(e, book)
           },
           {
-            icon: 'add',
+            icon: 'add_circle',
+            iconProps: { color: 'primary', style: { fontSize: 30 } },
             tooltip: 'Add new book to database',
             isFreeAction: true,
             onClick: () => handleCreateBook()

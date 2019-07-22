@@ -71,7 +71,7 @@ module.exports = {
       return me
         .addBook(bookId)
         .then(entry =>
-          models.Book.findByPk(entry[0].bookId)
+          models.Book.findByPk(bookId)
             .then(book => book)
             .catch(e => e)
         )

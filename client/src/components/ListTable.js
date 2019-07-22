@@ -12,6 +12,7 @@ export default props => {
         actions={[
           {
             icon: 'delete',
+            iconProps: { style: { color: 'red' } },
             tooltip: 'Remove book from list',
             onClick: (event, book) => {
               setInfo1({

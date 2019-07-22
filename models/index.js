@@ -1,16 +1,18 @@
 const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+
+if (process.env.DB_URL) {
+  sequelize = new Sequelize(process.env.DB_URL, { dialect: 'postgres' });
 } else {
   sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
+    process.env.DB || 'ReadingList',
+    process.env.DB_USER || 'postgres',
+    process.env.DB_PASS || 'postgres',
+    {
+      host: '127.0.0.1',
+      dialect: 'postgres'
+    }
   );
 }
 

@@ -21,14 +21,12 @@ export default ({ info, setInfo }) => {
     <Mutation mutation={ADD_BOOK_TO_LIST}>
       {(addBookToList, { loading, error }) => {
         const handleClose = () => {
-          setInfo({ open: false, msg: '', bookId: 0 });
-        };
-
-        const handleMutation = () => {
           addBookToList({
             variables: { bookId: info.bookId },
             refetchQueries: [{ query: GET_ME }]
           });
+
+          setInfo({ open: false, msg: '', bookId: 0 });
         };
 
         if (loading)
@@ -47,17 +45,11 @@ export default ({ info, setInfo }) => {
           );
 
         if (error) {
-          console.log('INFOSNACKBAR ERROR OBJECT ');
+          console.log('ADDBOOKTOLIST ERROR OBJECT ');
           console.log(error);
         }
 
-        return (
-          <InfoSnackbar
-            info={info}
-            handleClose={handleClose}
-            handleMutation={handleMutation}
-          />
-        );
+        return <InfoSnackbar info={info} handleClose={handleClose} />;
       }}
     </Mutation>
   );
