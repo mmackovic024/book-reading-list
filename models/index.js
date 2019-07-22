@@ -2,13 +2,13 @@ const Sequelize = require('sequelize');
 
 let sequelize;
 
-if (process.env.DB_URL) {
-  sequelize = new Sequelize(process.env.DB_URL, { dialect: 'postgres' });
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, { dialect: 'postgres' });
 } else {
   sequelize = new Sequelize(
-    process.env.DB || 'ReadingList',
-    process.env.DB_USER || 'postgres',
-    process.env.DB_PASS || 'postgres',
+    process.env.DATABASE || 'ReadingList',
+    process.env.DATABASE_USER || 'postgres',
+    process.env.DATABASE_PASS || 'postgres',
     {
       host: '127.0.0.1',
       dialect: 'postgres'
